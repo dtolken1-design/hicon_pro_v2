@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../../core/auth/pin_auth_service.dart';
+import '../dashboard/admin_dashboard.dart';
+import '../dashboard/tech_dashboard.dart';
 
 class PinLoginScreen extends StatefulWidget {
   const PinLoginScreen({super.key});
@@ -15,9 +18,22 @@ class _PinLoginScreenState extends State<PinLoginScreen> {
   void login() {
     final success = AuthService.login(pinController.text);
 
-    setState(() {
-      message = success ? "Login successful" : "Invalid PIN";
-    });
+    if (!success) {
+      setState(() => message = "Invalid PIN");
+      return;
+    }
+
+    if (AuthService.role == "admin") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const AdminDashboard()),
+      );
+    } else if (AuthService.role == "tech") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const TechDashboard()),
+      );
+    }
   }
 
   @override
